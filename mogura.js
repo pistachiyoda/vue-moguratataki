@@ -1,6 +1,7 @@
 "use strict";
 
 let score = 0;
+var bus = new Vue();
 
 class GameController {
   constructor() {
@@ -9,13 +10,22 @@ class GameController {
   start() {
     setTimeout(() => {
       this.end();
-    }, 10000);
+    }, 3000);
   }
   end() {
-    this.moguras.forEach(mogura => mogura.stop());
+    // イベントバスを使って終了イベントをmoguraコンポーネントに伝える
+    bus.$emit("bus-event");
+    //this.moguras.forEach(mogura => mogura.stop());
     alert(`ゲーム終了 スコア${score}`);
   }
 }
+
+var gameController = new GameController();
+const startButton = document.getElementById("start");
+startButton.addEventListener("click", () => {
+  const gameController = new GameController();
+  gameController.start();
+});
 
 const STATUS = {
   HIDE: 0,
@@ -71,6 +81,7 @@ Vue.component("mogura", {
   },
   mounted: function() {
     this.hide();
+    bus.$on("bus-event", this.stop);
   },
   template: "<img :src='currrent_mogura' @click='hit'></img>"
 });
