@@ -8,14 +8,13 @@ class GameController {
     this.moguras = [];
   }
   start() {
+    bus.$emit("bus-event-start");
     setTimeout(() => {
       this.end();
     }, 3000);
   }
   end() {
-    // イベントバスを使って終了イベントをmoguraコンポーネントに伝える
-    bus.$emit("bus-event");
-    //this.moguras.forEach(mogura => mogura.stop());
+    bus.$emit("bus-event-end");
     alert(`ゲーム終了 スコア${score}`);
   }
 }
@@ -80,8 +79,8 @@ Vue.component("mogura", {
     }
   },
   mounted: function() {
-    this.hide();
-    bus.$on("bus-event", this.stop);
+    bus.$on("bus-event-start", this.hide);
+    bus.$on("bus-event-end", this.stop);
   },
   template: "<img :src='currrent_mogura' @click='hit'></img>"
 });
