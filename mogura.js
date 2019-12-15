@@ -44,23 +44,27 @@ const ANA = "images/穴.png";
 
 Vue.component("mogura", {
   data: function() {
-    return { currrent_mogura: NORMAL_MOGRAS.normal };
+    return {
+      status: null,
+      mogura_type: null,
+      current_mogura: NORMAL_MOGRAS.normal,
+      current_timeout_id: null
+    };
   },
   methods: {
     show() {
-      //Math.floor(Math.random() * 2);
       this.status = STATUS.SHOW;
       let mogura_type = TYPES[Math.floor(Math.random() * 2)];
       this.mogura_type = mogura_type;
-      this.currrent_mogura = NORMAL_MOGRAS[mogura_type];
-      this.currrent_timeout_id = setTimeout(() => {
+      this.current_mogura = NORMAL_MOGRAS[mogura_type];
+      this.current_timeout_id = setTimeout(() => {
         this.hide();
       }, 1000);
     },
     hide() {
       this.status = STATUS.HIDE;
-      this.currrent_mogura = ANA;
-      this.currrent_timeout_id = setTimeout(() => {
+      this.current_mogura = ANA;
+      this.current_timeout_id = setTimeout(() => {
         this.show();
       }, Math.floor(Math.random() * 10000));
     },
@@ -68,21 +72,21 @@ Vue.component("mogura", {
       if (this.status === STATUS.SHOW) {
         score++;
         this.status === STATUS.HIT;
-        this.currrent_mogura =
+        this.current_mogura =
           this.mogura_type === "normal"
             ? HIT_MOGURAS.normal
             : HIT_MOGURAS.abnormal;
       }
     },
     stop() {
-      clearTimeout(this.current_tiemout_id);
+      clearTimeout(this.current_timeout_id);
     }
   },
   mounted: function() {
     bus.$on("bus-event-start", this.hide);
     bus.$on("bus-event-end", this.stop);
   },
-  template: "<img :src='currrent_mogura' @click='hit'></img>"
+  template: "<img :src='current_mogura' @click='hit'></img>"
 });
 
 var vm = new Vue({
